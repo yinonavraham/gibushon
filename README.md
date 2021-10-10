@@ -1,2 +1,2 @@
-# gibushon
+# Gibushon (גיבושון)
 Candidate assessment system
