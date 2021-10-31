@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import SignUp from '../views/SignUp.vue'
+import Login from '../components/Login.vue'
+import SignUp from '../components/SignUp.vue'
+import Logout from '../components/Logout.vue'
+import Events from '../components/Events.vue'
+import { getAuth } from "firebase/auth";
 
 Vue.use(VueRouter)
 
@@ -23,6 +26,16 @@ const routes = [
     component: SignUp
   },
   {
+    path: '/logout',
+    name: 'Logout',
+    component: Logout
+  },
+  {
+    path: '/events',
+    name: 'Events',
+    component: Events
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
@@ -34,6 +47,15 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  let loggedIn = getAuth().currentUser
+  if (to.name !== 'Login' && !loggedIn) {
+    next({ name: 'Login' })
+  } else {
+    next()
+  }
 })
 
 export default router

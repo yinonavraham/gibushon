@@ -12,5 +12,9 @@ module.exports = {
         msTileColor: '#1ba85d',
         appleMobileWebAppCapable: 'yes',
         appleMobileWebAppStatusBarStyle: 'black'
-    }
+    },
+
+    transpileDependencies: [
+      'vuetify'
+    ]
 }

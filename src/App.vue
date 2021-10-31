@@ -1,57 +1,117 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <span v-if="!currentUser()"><router-link to="/login">Login</router-link> |</span>
-      <span v-if="!currentUser()"><router-link to="/signup">SignUp</router-link> |</span>
-      <button v-if="currentUser()" @click="logout">Logout</button>
-      {{ currentUser() ? currentUser().displayName ? currentUser().displayName : currentUser().email : "" }}
-    </div>
-    <router-view/>
-  </div>
+  <v-app id="main-app">
+    <template v-if="loggedIn()">
+    <v-navigation-drawer
+      v-model="drawer"
+      :right="$vuetify.rtl"
+      app
+    >
+      <v-sheet
+        color="grey lighten-4"
+        class="pa-4"
+      >
+        <v-avatar
+          class="mb-4"
+          color="grey darken-1"
+          size="64"
+        >
+          <img :src="currentUser().photoUrl" />
+        </v-avatar>
+
+        <div>{{ currentUserDisplayName() }}</div>
+      </v-sheet>
+
+      <v-divider></v-divider>
+
+      <v-list>
+        <v-list-item
+          v-for="menuItem in menuItems()"
+          :key="menuItem.key"
+          :to="menuItem.to"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>{{ menuItem.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ menuItem.text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          key="logout"
+          @click="logoutDialog = true"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>התנתק</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Gibushon - גיבושון</v-toolbar-title>
+    </v-app-bar>
+    </template>
+    <logout-dialog v-model="logoutDialog"/>
+
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
 <script>
   import { getAuth } from "firebase/auth";
-export default {
-  methods: {
-    currentUser() {
-      var auth = getAuth();
-      return auth ? auth.currentUser : null
+  import LogoutDialog from "./components/LogoutDialog.vue"
+
+  export default {
+    name: 'App',
+
+    components: {
+      LogoutDialog
     },
-    logout() {
-      getAuth().signOut()
-      .then(() => {
-        alert("Signed out");
-      })
-      .catch(err => {
-        alert(err);
-      })
+
+    data: () => ({
+      drawer: null,
+      logoutDialog: false
+    }),
+
+    methods: {
+      currentUser() {
+        return getAuth().currentUser;
+      },
+      currentUserDisplayName() {
+        let user = this.currentUser();
+        return user ? user.displayName : "Anonymous";
+      },
+      loggedIn() {
+        return this.currentUser()
+      },
+      menuItems() {
+        return [
+          {
+            key: "events",
+            text: "מיונים",
+            icon: "mdi-calendar-multiple",
+            to: "/events"
+          },
+          // {
+          //   key: "logout",
+          //   text: "התנתק",
+          //   icon: "mdi-logout",
+          //   to: "/logout"
+          // }
+        ]
+      }
     }
-  }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
