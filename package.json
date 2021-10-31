@@ -6,6 +6,7 @@
   "license": "MIT",
   "author": "Yinon Avraham",
   "scripts": {
+    "prereq": "npm install --save-dev @vue/cli",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
