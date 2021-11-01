@@ -54,7 +54,11 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import AuthService from "../services/auth/authService"
+import LoginError from "../services/auth/loginError"
+
+const authService = new AuthService();
+
 export default {
    name: 'Login',
    data() {
@@ -96,9 +100,8 @@ export default {
             return
          }
          this.formDisabled = true
-         const auth = getAuth()
-         signInWithEmailAndPassword(auth, this.email, this.password)
-            .then(userCreds => {
+         authService.signInWithEmailAndPassword(this.email, this.password)
+            .then(userPrincipal => {
                this.$refs.loginForm.reset()
                this.$router.push("home");
             })
@@ -135,16 +138,11 @@ export default {
          this.alert.visible = true;
       },
       getLoginErrorMessage(err) {
-         let errName = err.name;
-         let errCode = err.code;
-         if (errName && errName === "FirebaseError" && errCode) {
-            switch (errCode) {
-               case "auth/user-disabled":
-                  return "המשתמש מושבת, נא לפנות למנהל המערכת";
-               case "auth/user-not-found":
-               case "auth/wrong-password":
-                  return "פרטי משתמש לא נכונים";
-            }
+         switch (err.code) {
+            case LoginError.ERR_USER_DISABLED:
+               return "המשתמש מושבת, נא לפנות למנהל המערכת";
+            case LoginError.ERR_BAD_CREDENTIALS:
+               return "פרטי משתמש לא נכונים";
          }
          return "שגיאה במהלך ניסיון התחברות, אנא נסה שוב מאוחר יותר";
       }

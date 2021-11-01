@@ -70,8 +70,10 @@
 </template>
 
 <script>
-  import { getAuth } from "firebase/auth";
+  import AuthService from "@/services/auth/authService";
   import LogoutDialog from "./components/LogoutDialog.vue"
+
+  const authService = new AuthService();
 
   export default {
     name: 'App',
@@ -87,7 +89,7 @@
 
     methods: {
       currentUser() {
-        return getAuth().currentUser;
+        return authService.loggedInPrincipal;
       },
       currentUserDisplayName() {
         let user = this.currentUser();
@@ -104,12 +106,6 @@
             icon: "mdi-calendar-multiple",
             to: "/events"
           },
-          // {
-          //   key: "logout",
-          //   text: "התנתק",
-          //   icon: "mdi-logout",
-          //   to: "/logout"
-          // }
         ]
       }
     }

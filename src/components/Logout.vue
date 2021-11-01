@@ -3,11 +3,14 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth";
+import AuthService from "@/services/auth/authService";
+
+const authService = new AuthService();
+
 export default {
     name: "Logout",
     mounted() {
-        getAuth().signOut().then(() => {
+        authService.logout().then(() => {
             this.$router.push("Login")
         }).catch((err) => {
             console.error("Error while logging out: " + err)
