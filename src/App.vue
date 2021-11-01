@@ -7,7 +7,7 @@
       app
     >
       <v-sheet
-        color="grey lighten-4"
+        color="primary"
         class="pa-4"
       >
         <v-avatar
@@ -15,10 +15,10 @@
           color="grey darken-1"
           size="64"
         >
-          <img :src="currentUser().photoUrl" />
+          <img :src="currentUser().photoURL" />
         </v-avatar>
 
-        <div>{{ currentUserDisplayName() }}</div>
+        <div class="white--text">{{ currentUserDisplayName() }}</div>
       </v-sheet>
 
       <v-divider></v-divider>
@@ -55,7 +55,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app>
+    <v-app-bar app color="secondary">
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Gibushon - גיבושון</v-toolbar-title>
